@@ -13,7 +13,23 @@ services:
     image: dpage/pgadmin4
     container_name: 69-s3-admin
     ports:
-      - "127.0.0.1:8083:80"
+      - 8083:80
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+
+  app:
+    image: prawee/strapi
+    container_name: 69-s3-app
+    ports:
+      - "127.0.0.1:1337:1337"
+    environment:
+      - DATABASE_CLIENT=postgres
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=${DATABASE_DB}
+      - DATABASE_USERNAME=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_SSL=false
+    depends_on:
+      - db
