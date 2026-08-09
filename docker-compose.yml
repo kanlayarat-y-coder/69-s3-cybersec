@@ -2,29 +2,37 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:15-alpine
     container_name: 69-s3-db
-    ports:
-      - "127.0.0.1:54327:5432"
+    restart: always
     env_file:
       - ./db/.env
+    ports:
+      - "54327:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
   admin:
     image: dpage/pgadmin4
     container_name: 69-s3-admin
-    ports:
-      - "8083:80"
+    restart: always
     env_file:
       - ./admin/.env
+    ports:
+      - "8083:80"
     depends_on:
       - db
 
   app:
     image: prawee/strapi
     container_name: 69-s3-app
-    ports:
-      - "127.0.0.1:1337:1337"
+    restart: always
     env_file:
       - ./app/.env
+    ports:
+      - "1337:1337"
     depends_on:
       - db
+
+volumes:
+  db_data:
