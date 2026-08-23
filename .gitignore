@@ -1,5 +1,5 @@
-.env
 db/.env
 admin/.env
 app/.env
 api.rest
+.env
