@@ -2,41 +2,96 @@ services:
   db:
     image: postgres:16-alpine
     container_name: 69-s3-db
-    ports:
-      - "54327:5432"
+    restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_DB: ${DATABASE_HOST}
+      POSTGRES_DB: ${DATABASE_NAME}
     volumes:
       - data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME} -d ${DATABASE_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    security_opt:
+      - no-new-privileges:true
 
   admin:
     image: dpage/pgadmin4
     container_name: 69-s3-admin
+    restart: unless-stopped
     ports:
-      - "8083:80"
+      - "127.0.0.1:8083:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/ping || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+    security_opt:
+      - no-new-privileges:true
 
   app:
     image: prawee/strapi
     container_name: 69-s3-app
+    restart: unless-stopped
     ports:
-      - "9093:1337"
+      - "127.0.0.1:9093:1337"
     environment:
       DATABASE_CLIENT: ${DATABASE_CLIENT}
-      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_HOST: db
       DATABASE_PORT: ${DATABASE_PORT}
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_USERNAME: ${DATABASE_USERNAME}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_SSL: "false"
+      DATABASE_SSL: "true"
+      JWT_SECRET: ${STRAPI_JWT_SECRET}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:1337/_health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    security_opt:
+      - no-new-privileges:true
 
 volumes:
   data:
+    driver: local
+
+networks:
+  internal:
+    driver: bridge
+    internal: false
