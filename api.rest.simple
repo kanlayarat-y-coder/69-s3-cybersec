@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ## Signup
-POST http://localhost:9093/api/auth/local/registhr
+POST http://localhost:9093/api/auth/local/register
 
 Content-Type: application/json
 {
