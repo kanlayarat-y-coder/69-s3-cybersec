@@ -1,42 +1,87 @@
-# REST
+# REST API request template - Simple (fill blanks before use)
 
-## Login (admin)
-POST http://localhost:9093/admin/login
-Content-Type: application/json
-{
-    "email": "",
-    "password": "",
-    "rememberMe": true
-}
+@baseUrl = http://localhost:9093
 
-## Login (user)
+@adminFirstName =
+@adminLastName =
+@adminEmail =
+@adminPassword =
 
-POST http://localhost:9093/api/auth/local
-Content-Type: application/json
-{
-    "identifier": "",
-    "password": ""
-}
+@userUsername =
+@userEmail =
+@userPassword =
 
-## Signup
-POST http://localhost:9093/api/auth/local/register
-
-Content-Type: application/json
-{
-    "username": "",
-    "email": "",
-    "password": ""
-}
-
-## Forgot Password
-POST http://localhost:9093/admin/forgot-password
+### 1. Admin Section
+### 1.1 Register Admin
+# @name adminRegister
+POST {{baseUrl}}/admin/auth/register-admin
 Content-Type: application/json
 
 {
-    "email": ""
+  "firstname": "{{adminFirstName}}",
+  "lastname": "{{adminLastName}}",
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}",
+  "rememberMe": true
 }
 
-## Profile
-GET http://localhost:9093/admin/users/me
+### 1.2 Admin Login
+# @name adminLogin
+POST {{baseUrl}}/admin/auth/login
+Content-Type: application/json
 
-Authorization: Bearer <Token>
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}",
+  "rememberMe": true
+}
+
+### 1.3 Admin Forgot Password
+# @name adminForgotPassword
+POST {{baseUrl}}/admin/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}"
+}
+
+### 1.4 Admin Profile
+# @name adminProfile
+GET {{baseUrl}}/admin/users/me
+Authorization: Bearer {{adminLogin.response.body.$.data.token}}
+
+### 2. User Section
+### 2.1 User Register
+# @name userRegister
+POST {{baseUrl}}/api/auth/local/register
+Content-Type: application/json
+
+{
+  "username": "{{userUsername}}",
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}"
+}
+
+### 2.2 User Login
+# @name userLogin
+POST {{baseUrl}}/api/auth/local
+Content-Type: application/json
+
+{
+  "identifier": "{{userEmail}}",
+  "password": "{{userPassword}}"
+}
+
+### 2.3 User Forgot Password
+# @name userForgotPassword
+POST {{baseUrl}}/api/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}"
+}
+
+### 2.4 User Profile
+# @name userProfile
+GET {{baseUrl}}/api/users/me
+Authorization: Bearer {{userLogin.response.body.$.jwt}}
