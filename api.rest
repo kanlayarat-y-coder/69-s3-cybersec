@@ -1,15 +1,17 @@
-# REST API request template - Simple (fill blanks before use)
+# REST API request template
+# Fill in the blank values below before sending requests.
 
+# For example http://localhost:9093
 @baseUrl = http://localhost:9093
 
-@adminFirstName =
-@adminLastName =
-@adminEmail =
-@adminPassword =
+@adminFirstName = Admin
+@adminLastName = User
+@adminEmail = admin@example.com
+@adminPassword = Admin1234!
 
-@userUsername =
-@userEmail =
-@userPassword =
+@userUsername = testuser
+@userEmail = user@example.com
+@userPassword = User1234!
 
 ### 1. Admin Section
 ### 1.1 Register Admin
