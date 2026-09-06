@@ -39,7 +39,7 @@ services:
     container_name: 69-s3-admin
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8083:80"
+      - "127.0.0.1:8083:8080"
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
@@ -49,7 +49,7 @@ services:
     networks:
       - internal
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost/ping || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/misc/ping || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -82,7 +82,7 @@ services:
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_USERNAME: ${DATABASE_USERNAME}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_SSL: "true"
+      DATABASE_SSL: "false"
       JWT_SECRET: ${STRAPI_JWT_SECRET}
     depends_on:
       db:
@@ -90,7 +90,7 @@ services:
     networks:
       - internal
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:1337/_health || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:1337/_health || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -119,4 +119,4 @@ volumes:
 networks:
   internal:
     driver: bridge
-    internal: true
+    internal: false
