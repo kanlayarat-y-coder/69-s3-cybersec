@@ -34,6 +34,12 @@ services:
       - CHOWN
     tmpfs:
       - /tmp
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+        labels: "service=db"
 
   admin:
     image: dpage/pgadmin4
@@ -69,6 +75,12 @@ services:
       - /tmp
       - /var/log/pgadmin
       - /var/run/pgadmin
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+        labels: "service=admin"
 
   app:
     image: prawee/strapi
@@ -85,6 +97,13 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_SSL: "false"
       JWT_SECRET: ${STRAPI_JWT_SECRET}
+      ADMIN_JWT_SECRET: ${STRAPI_JWT_SECRET}
+      API_TOKEN_SALT: ${STRAPI_JWT_SECRET}
+      JWT_EXPIRES_IN: "15m"
+      TRANSFER_TOKEN_SALT: ${STRAPI_JWT_SECRET}
+    volumes:
+      - ./strapi-config/middlewares.js:/opt/app/config/middlewares.js:ro
+      - ./strapi-config/plugins.js:/opt/app/config/plugins.js:ro
     depends_on:
       db:
         condition: service_healthy
@@ -112,6 +131,12 @@ services:
       - /tmp
       - /opt/app/.tmp
       - /opt/app/public/uploads
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+        labels: "service=app"
 
 volumes:
   data:
