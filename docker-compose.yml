@@ -31,10 +31,9 @@ services:
       - SETUID
       - SETGID
       - FOWNER
-    read_only: true
+      - CHOWN
     tmpfs:
       - /tmp
-      - /var/run/postgresql
 
   admin:
     image: dpage/pgadmin4
