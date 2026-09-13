@@ -31,8 +31,10 @@ services:
       - SETUID
       - SETGID
       - FOWNER
+    read_only: true
     tmpfs:
       - /tmp
+      - /var/run/postgresql
 
   admin:
     image: dpage/pgadmin4
@@ -119,4 +121,4 @@ volumes:
 networks:
   internal:
     driver: bridge
-    internal: false
+    internal: true
