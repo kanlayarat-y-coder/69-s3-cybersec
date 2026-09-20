@@ -11,4 +11,18 @@ module.exports = ({ env }) => ({
       },
     },
   },
+  email: {
+    config: {
+      provider: 'sendmail',
+      providerOptions: {
+        devHost: 'mail',
+        devPort: 1025,
+        silent: true,
+      },
+      settings: {
+        defaultFrom: 'no-reply@example.com',
+        defaultReplyTo: 'no-reply@example.com',
+      },
+    },
+  },
 });

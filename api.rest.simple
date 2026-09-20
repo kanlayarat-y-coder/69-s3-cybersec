@@ -27,8 +27,7 @@ Content-Type: application/json
   "firstname": "{{adminFirstName}}",
   "lastname": "{{adminLastName}}",
   "email": "{{adminEmail}}",
-  "password": "{{adminPassword}}",
-  "rememberMe": true
+  "password": "{{adminPassword}}"
 }
 
 ### 1.2 Admin Login

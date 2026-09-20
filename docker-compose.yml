@@ -41,6 +41,34 @@ services:
         max-file: "5"
         labels: "service=db"
 
+  mail:
+    image: axllent/mailpit
+    container_name: 69-s3-mail
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
+    networks:
+      - internal
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+        labels: "service=mail"
+
   admin:
     image: dpage/pgadmin4
     container_name: 69-s3-admin
