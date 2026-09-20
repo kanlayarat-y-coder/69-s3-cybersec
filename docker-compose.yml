@@ -145,4 +145,3 @@ volumes:
 networks:
   internal:
     driver: bridge
-    internal: true
